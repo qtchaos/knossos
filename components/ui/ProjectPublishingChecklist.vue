@@ -122,8 +122,8 @@ import RequiredIcon from '~/assets/images/utils/asterisk.svg'
 import SuggestionIcon from '~/assets/images/utils/lightbulb.svg'
 import ModerationIcon from '~/assets/images/sidebar/admin.svg'
 import SendIcon from '~/assets/images/utils/send.svg'
-import Checkbox from '~/components/ui/Checkbox'
-import { acceptTeamInvite, removeSelfFromTeam } from '~/helpers/teams'
+import Checkbox from '~/components/ui/Checkbox.vue'
+import { acceptTeamInvite, removeSelfFromTeam } from '~/helpers/teams.js'
 
 export default {
   components: {

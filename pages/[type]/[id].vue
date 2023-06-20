@@ -423,11 +423,9 @@
           :all-members="allMembers"
           :update-members="updateMembers"
         />
-        <div v-if="project.status === 'withheld'" class="card warning" aria-label="Warning">
-          {{ project.title }} is not viewable in search because it has been found to be in violation
-          of one of <nuxt-link to="/legal/rules"> Modrinth's content rules </nuxt-link>. Modrinth
-          makes no guarantees as to whether {{ project.title }} is safe for use in a multiplayer
-          context.
+        <div v-else-if="project.status === 'withheld'" class="card warning" aria-label="Warning">
+          {{ project.title }} has been removed from search by Modrinth's moderators. Please use
+          {{ project.title }} at your own risk.
         </div>
         <div v-if="project.status === 'archived'" class="card warning" aria-label="Warning">
           {{ project.title }} has been archived. {{ project.title }} will not receive any further
@@ -599,47 +597,46 @@
               <ChevronRightIcon class="featured-header-chevron" aria-hidden="true" />
             </nuxt-link>
           </div>
-          <div
-            v-for="version in featuredVersions"
-            :key="version.id"
-            class="featured-version button-transparent"
-            @click="
-              $router.push(
-                `/${project.project_type}/${
-                  project.slug ? project.slug : project.id
-                }/version/${encodeURI(version.displayUrlEnding)}`
-              )
-            "
-          >
-            <a
-              v-tooltip="
-                version.primaryFile.filename + ' (' + $formatBytes(version.primaryFile.size) + ')'
-              "
-              :href="version.primaryFile.url"
-              class="download square-button brand-button"
-              :aria-label="`Download ${version.name}`"
-              @click.stop="(event) => event.stopPropagation()"
+          <ClientOnly>
+            <NuxtLink
+              v-for="(version, index) in featuredVersions"
+              :key="index"
+              class="featured-version button-transparent"
+              :to="`/${project.project_type}/${
+                project.slug ? project.slug : project.id
+              }/version/${encodeURI(version.displayUrlEnding)}`"
+              :ref_key="`featured-version-${index}`"
             >
-              <DownloadIcon aria-hidden="true" />
-            </a>
-            <div class="info">
-              <nuxt-link
-                :to="`/${project.project_type}/${
-                  project.slug ? project.slug : project.id
-                }/version/${encodeURI(version.displayUrlEnding)}`"
-                class="top"
+              <NuxtLink
+                v-tooltip="
+                  version.primaryFile.filename + ' (' + $formatBytes(version.primaryFile.size) + ')'
+                "
+                :to="version.primaryFile.url"
+                external
+                class="download square-button brand-button"
+                :aria-label="`Download ${version.name}`"
               >
-                {{ version.name }}
-              </nuxt-link>
-              <div v-if="version.game_versions.length > 0" class="game-version item">
-                {{ version.loaders.map((x) => $formatCategory(x)).join(', ') }}
-                {{ $formatVersion(version.game_versions) }}
+                <DownloadIcon aria-hidden="true" />
+              </NuxtLink>
+              <div class="info">
+                <NuxtLink
+                  :to="`/${project.project_type}/${
+                    project.slug ? project.slug : project.id
+                  }/version/${encodeURI(version.displayUrlEnding)}`"
+                  class="top"
+                >
+                  {{ version.name }}
+                </NuxtLink>
+                <div v-if="version.game_versions.length > 0" class="game-version item">
+                  {{ version.loaders.map((x) => $formatCategory(x)).join(', ') }}
+                  {{ $formatVersion(version.game_versions) }}
+                </div>
+                <Badge v-if="version.version_type === 'release'" type="release" color="green" />
+                <Badge v-else-if="version.version_type === 'beta'" type="beta" color="orange" />
+                <Badge v-else-if="version.version_type === 'alpha'" type="alpha" color="red" />
               </div>
-              <Badge v-if="version.version_type === 'release'" type="release" color="green" />
-              <Badge v-else-if="version.version_type === 'beta'" type="beta" color="orange" />
-              <Badge v-else-if="version.version_type === 'alpha'" type="alpha" color="red" />
-            </div>
-          </div>
+            </NuxtLink>
+          </ClientOnly>
           <hr class="card-divider" />
         </template>
         <h2 class="card-header">Project members</h2>
@@ -779,19 +776,19 @@ import UnknownIcon from '~/assets/images/utils/unknown-donation.svg'
 import ChevronRightIcon from '~/assets/images/utils/chevron-right.svg'
 import EyeOffIcon from '~/assets/images/utils/eye-off.svg'
 import BoxIcon from '~/assets/images/utils/box.svg'
-import Promotion from '~/components/ads/Promotion'
-import Badge from '~/components/ui/Badge'
-import Categories from '~/components/ui/search/Categories'
-import EnvironmentIndicator from '~/components/ui/EnvironmentIndicator'
-import Modal from '~/components/ui/Modal'
-import ModalReport from '~/components/ui/ModalReport'
-import ModalModeration from '~/components/ui/ModalModeration'
-import NavRow from '~/components/ui/NavRow'
-import CopyCode from '~/components/ui/CopyCode'
-import Avatar from '~/components/ui/Avatar'
-import NavStack from '~/components/ui/NavStack'
-import NavStackItem from '~/components/ui/NavStackItem'
-import ProjectPublishingChecklist from '~/components/ui/ProjectPublishingChecklist'
+import Promotion from '~/components/ads/Promotion.vue'
+import Badge from '~/components/ui/Badge.vue'
+import Categories from '~/components/ui/search/Categories.vue'
+import EnvironmentIndicator from '~/components/ui/EnvironmentIndicator.vue'
+import Modal from '~/components/ui/Modal.vue'
+import ModalReport from '~/components/ui/ModalReport.vue'
+import ModalModeration from '~/components/ui/ModalModeration.vue'
+import NavRow from '~/components/ui/NavRow.vue'
+import CopyCode from '~/components/ui/CopyCode.vue'
+import Avatar from '~/components/ui/Avatar.vue'
+import NavStack from '~/components/ui/NavStack.vue'
+import NavStackItem from '~/components/ui/NavStackItem.vue'
+import ProjectPublishingChecklist from '~/components/ui/ProjectPublishingChecklist.vue'
 import SettingsIcon from '~/assets/images/utils/settings.svg'
 import UsersIcon from '~/assets/images/utils/users.svg'
 import CategoriesIcon from '~/assets/images/utils/tags.svg'
@@ -803,7 +800,7 @@ import VersionIcon from '~/assets/images/utils/version.svg'
 import CrossIcon from '~/assets/images/utils/x.svg'
 import EditIcon from '~/assets/images/utils/edit.svg'
 import ModerationIcon from '~/assets/images/sidebar/admin.svg'
-import { renderString } from '~/helpers/parse'
+import { renderString } from '~/helpers/parse.js'
 import Breadcrumbs from '~/components/ui/Breadcrumbs.vue'
 
 const data = useNuxtApp()
@@ -906,7 +903,7 @@ if (project.value.project_type !== route.params.type || route.params.id !== proj
     `/${project.value.project_type}/${project.value.slug}${
       path.length > 0 ? `/${path.join('/')}` : ''
     }`,
-    { redirectCode: 301 }
+    { redirectCode: 301, replace: true }
   )
 }
 
