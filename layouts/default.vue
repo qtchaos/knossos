@@ -95,14 +95,15 @@
                 </div>
               </div>
               <section v-else class="auth-prompt">
-                <a
-                  :href="getAuthUrl()"
-                  class="log-in-button header-button brand-button"
-                  rel="noopener nofollow"
-                >
-                  <GitHubIcon aria-hidden="true" />
-                  Sign in with GitHub</a
-                >
+                <Button color="primary" large link="/sign-in"> <LogInIcon /> Sign in </Button>
+                <!--                <a-->
+                <!--                  :href="getAuthUrl()"-->
+                <!--                  class="log-in-button header-button brand-button"-->
+                <!--                  rel="noopener nofollow"-->
+                <!--                >-->
+                <!--                  <GitHubIcon aria-hidden="true" />-->
+                <!--                  Sign in with GitHub</a-->
+                <!--                >-->
               </section>
             </section>
           </section>
@@ -340,6 +341,7 @@
   </div>
 </template>
 <script setup>
+import { Button, LogInIcon } from 'omorphia'
 import HamburgerIcon from '~/assets/images/utils/hamburger.svg'
 import CrossIcon from '~/assets/images/utils/x.svg'
 import SearchIcon from '~/assets/images/utils/search.svg'
@@ -527,6 +529,7 @@ export default defineNuxtComponent({
 
 <style lang="scss">
 @import '~/assets/styles/global.scss';
+@import 'omorphia/dist/style.css';
 
 .layout {
   min-height: 100vh;
